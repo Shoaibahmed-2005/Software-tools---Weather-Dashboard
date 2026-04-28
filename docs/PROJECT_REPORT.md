@@ -1,8 +1,8 @@
-﻿ï»¿
+--
 # Real-Time Weather Station Dashboard
 ## Mini Project Report -- Software Tools Laboratory (Mini Project #13)
 
----
+--
 
 ## Section 1: Abstract
 
@@ -14,7 +14,7 @@ The web dashboard (HTML5, Vanilla CSS dark glassmorphism, JavaScript ES2022) pol
 
 A Python Tkinter desktop application allows operators to submit manual sensor readings to the server, while a Bash shell script (`start.sh`) automates environment setup, dependency installation, network diagnostics, database initialisation, and server launch. Docker and Docker Compose enable single-command containerised deployment. The project is version-controlled with Git, and the technical documentation is authored in LaTeX. Together, these components form an end-to-end demonstration of modern software tooling practices.
 
----
+--
 
 ## Section 2: Introduction
 
@@ -26,7 +26,7 @@ The project is structured around a client-server architecture. At the server tie
 
 The entire stack is containerised using Docker, launched via a Bash automation script, documented in LaTeX, and tracked in a Git repository -- ensuring that every experiment from 1 to 12 is concretely represented in the final codebase. This report documents the rationale, design decisions, implementation details, and observed outputs of the complete system.
 
----
+--
 
 ## Section 3: Scope and Objectives
 
@@ -52,7 +52,7 @@ The primary objectives of this project are:
 
 2. **Experiment 2 (UML Diagrams):** Produce UML Class, Sequence, and Use Case diagrams to formally describe the object-oriented structure and runtime behaviour of the system.
 
-3. **Experiment 3 (Forward/Reverse Engineering):** Implement forward engineering by generating the SQLite schema from the ER model (`database.py Ã¢â€ ' init_db()`), and implement reverse engineering by programmatically extracting the live schema via `PRAGMA table_info` and exposing it at `/api/schema`.
+3. **Experiment 3 (Forward/Reverse Engineering):** Implement forward engineering by generating the SQLite schema from the ER model (`database.py --' init_db()`), and implement reverse engineering by programmatically extracting the live schema via `PRAGMA table_info` and exposing it at `/api/schema`.
 
 4. **Experiment 4 (Shell Script):** Write a production-quality Bash script (`start.sh`) that automates virtual environment setup, dependency installation, network checks, database initialisation, server launch, health polling, and log tailing.
 
@@ -72,14 +72,14 @@ The primary objectives of this project are:
 
 12. **Experiment 12 (Git Version Control):** Maintain a Git repository with a `.gitignore`, meaningful commit history, and a remote-ready configuration for push to GitHub or similar hosting.
 
----
+--
 
 ## Section 4: Requirements
 
 ### 4.1 Functional Requirements
 
 | ID | Requirement |
-|----|-------------|
+|--|--|
 | FR-01 | The system shall auto-generate weather readings (temperature, humidity, pressure, wind speed, wind direction) every 5 seconds using a background thread. |
 | FR-02 | Readings shall be persisted in a SQLite database with referential integrity enforced via foreign keys. |
 | FR-03 | The server shall expose a RESTful API with endpoints for current reading, reading history (JSON), reading history (XML), alerts, stations, station registration, and DB schema. |
@@ -94,11 +94,11 @@ The primary objectives of this project are:
 ### 4.2 Non-Functional Requirements
 
 | ID | Requirement |
-|----|-------------|
+|--|--|
 | NFR-01 | **Performance:** API response time shall be under 200 ms for all GET endpoints under normal load. |
 | NFR-02 | **Reliability:** The sensor simulation thread shall be a daemon thread; failure of one reading shall not crash the server. |
 | NFR-03 | **Portability:** The application shall run on Python 3.8+ on Windows, macOS, and Linux without modification. |
-| NFR-04 | **Usability:** The dashboard shall be readable on a 1024Ãƒâ€"768 viewport minimum; colour contrast shall meet WCAG AA guidelines. |
+| NFR-04 | **Usability:** The dashboard shall be readable on a 1024f"768 viewport minimum; colour contrast shall meet WCAG AA guidelines. |
 | NFR-05 | **Maintainability:** All Python modules shall include docstrings; all API endpoints shall include inline comments referencing the relevant experiment. |
 | NFR-06 | **Security:** The Flask secret key shall be configurable via environment variable; no credentials shall be stored in plaintext in version control. |
 
@@ -123,7 +123,7 @@ psutil==5.9.8
 **Browser Compatibility:**
 - Google Chrome 110+, Mozilla Firefox 110+, Microsoft Edge 110+
 
----
+--
 
 ## Section 5: Technology Stack
 
@@ -141,7 +141,7 @@ The frontend is built with pure HTML5 semantic markup and Vanilla CSS to avoid f
 
 ### 5.4 Chart.js
 
-Chart.js 4.x is a Canvas-based charting library included via CDN. It renders a responsive multi-dataset line chart with smooth bezier-curve tension (`tension: 0.4`), filled areas, custom tooltip styling matching the dark theme, and minimal grid lines. The pressure dataset is linearly scaled (`(pressure - 1000) Ãƒâ€" 0.5`) to bring it into the same visual range as temperature and humidity, avoiding axis compression.
+Chart.js 4.x is a Canvas-based charting library included via CDN. It renders a responsive multi-dataset line chart with smooth bezier-curve tension (`tension: 0.4`), filled areas, custom tooltip styling matching the dark theme, and minimal grid lines. The pressure dataset is linearly scaled (`(pressure - 1000) f" 0.5`) to bring it into the same visual range as temperature and humidity, avoiding axis compression.
 
 ### 5.5 Python Tkinter (GUI)
 
@@ -167,7 +167,7 @@ The repository is initialised with `git init`, tracked with a `.gitignore` that 
 
 `docs/report.tex` is authored for compilation with pdfLaTeX on Overleaf. It uses `article` class with `geometry`, `listings`, `graphicx`, `hyperref`, and `xcolor` packages to produce a professionally formatted PDF with syntax-highlighted code listings and clickable cross-references.
 
----
+--
 
 ## Section 6: System Architecture
 
@@ -179,18 +179,16 @@ The system follows a **three-tier architecture**:
 2. **Application/Logic Tier** -- Flask server (`server/app.py`) hosting the REST API, background sensor daemon, and form processing logic.
 3. **Presentation Tier** -- Two independent clients: (a) the browser-based HTML/JS dashboard and (b) the Tkinter desktop GUI.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: System Architecture Diagram -- three-tier layered diagram showing Browser Client and Tkinter GUI at the top, Flask REST API in the middle, and SQLite DB at the bottom, with arrows labelled HTTP/AJAX, HTTP POST, SQL queries. Draw in draw.io or Lucidchart and export as PNG.]
 
 ### 6.2 Data Flow Diagram (DFD) -- Level 0 (Context Diagram)
 
 At Level 0, the system is represented as a single process ("Weather Station System") with four external entities:
 
-- **Sensor Simulator** Ã¢â€ ' feeds readings into the system automatically.
-- **Web Browser** Ã¢â€ ' requests dashboard and API data.
-- **Tkinter GUI** Ã¢â€ ' submits manual readings via HTTP POST.
-- **Administrator** Ã¢â€ ' triggers registration of new stations via the web form.
+- **Sensor Simulator** --' feeds readings into the system automatically.
+- **Web Browser** --' requests dashboard and API data.
+- **Tkinter GUI** --' submits manual readings via HTTP POST.
+- **Administrator** --' triggers registration of new stations via the web form.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Level-0 DFD (Context Diagram) -- single central circle labelled "Weather Station System" with four external rectangles (Sensor Simulator, Web Browser, Tkinter GUI, Administrator) and labelled data flows between them. Draw in draw.io and export as PNG.]
 
 ### 6.3 Data Flow Diagram -- Level 1
 
@@ -202,22 +200,20 @@ At Level 1, the system decomposes into five sub-processes:
 4. **Process Registration** -- accepts Station data from Administrator, writes to `stations` store.
 5. **Accept Manual Reading** -- accepts reading from Tkinter GUI, writes to `readings` store.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Level-1 DFD -- five labelled process bubbles with data stores (readings, alerts, stations) shown as open rectangles and external entities connected by directional arrows. Draw in draw.io and export as PNG.]
 
 ### 6.4 Entity-Relationship (ER) Diagram
 
 Three entities are modelled:
 
 - **Station** (`id` PK, `name` UNIQUE, `location`, `latitude`, `longitude`, `registered_at`)
-- **Reading** (`id` PK, `station_id` FKÃ¢â€ 'Station, `temperature`, `humidity`, `pressure`, `wind_speed`, `wind_direction`, `recorded_at`, `source`)
-- **Alert** (`id` PK, `station_id` FKÃ¢â€ 'Station, `reading_id` FKÃ¢â€ 'Reading, `alert_type`, `message`, `triggered_at`)
+- **Reading** (`id` PK, `station_id` FK->Station, `temperature`, `humidity`, `pressure`, `wind_speed`, `wind_direction`, `recorded_at`, `source`)
+- **Alert** (`id` PK, `station_id` FK->Station, `reading_id` FK->Reading, `alert_type`, `message`, `triggered_at`)
 
 Relationships:
 - Station **has many** Readings (1:N)
 - Reading **may trigger** Alert (1:0..1 or 1:N based on threshold violations)
 - Alert **belongs to** Station (N:1) and Reading (N:1)
 
-Ã°Å¸"Â¸ [INSERT IMAGE: ER Diagram -- crow's foot notation showing Station, Reading, and Alert entities with their attributes and relationship cardinalities. Draw in draw.io (use ER notation template) and export as PNG.]
 
 ### 6.5 UML Diagrams
 
@@ -231,19 +227,17 @@ The key classes and modules in the system:
 - `network_check` module -- `get_interfaces()`, `check_server_reachability()`, `check_internet()`, `dns_lookup()`
 - `WeatherStationGUI` class -- `__init__()`, `_setup_styles()`, `_build_header()`, `_build_form()`, `_build_status()`, `_fetch_stations()`, `_submit()`
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Class Diagram -- boxes for Flask app, database module, sensor_sim module, network_check module, and WeatherStationGUI class with methods listed and dependency/association arrows. Draw in draw.io or PlantUML and export as PNG.]
 
 #### 6.5.2 Sequence Diagram -- AJAX Poll Cycle
 
 1. Browser `setInterval()` fires `poll()` every 3 s.
-2. `poll()` calls `fetchJSON()` Ã¢â€ ' HTTP GET `/api/current`.
-3. Flask `api_current()` calls `get_connection()` Ã¢â€ ' SQL SELECT on `readings JOIN stations`.
-4. DB returns row Ã¢â€ ' `row_to_dict()` Ã¢â€ ' `jsonify()` Ã¢â€ ' HTTP 200 JSON.
-5. `fetchJSON()` resolves Ã¢â€ ' `updateCards(data)` Ã¢â€ ' DOM update.
-6. `updateChart(data)` Ã¢â€ ' Chart.js `update()` Ã¢â€ ' canvas redraws.
-7. `fetchAlerts()` Ã¢â€ ' HTTP GET `/api/alerts` Ã¢â€ ' alerts list DOM update.
+2. `poll()` calls `fetchJSON()` --' HTTP GET `/api/current`.
+3. Flask `api_current()` calls `get_connection()` --' SQL SELECT on `readings JOIN stations`.
+4. DB returns row --' `row_to_dict()` --' `jsonify()` --' HTTP 200 JSON.
+5. `fetchJSON()` resolves --' `updateCards(data)` --' DOM update.
+6. `updateChart(data)` --' Chart.js `update()` --' canvas redraws.
+7. `fetchAlerts()` --' HTTP GET `/api/alerts` --' alerts list DOM update.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Sequence Diagram -- lifelines for Browser, app.js, Flask (app.py), database.py, SQLite showing the full 3-second poll cycle with synchronous and asynchronous messages. Draw in draw.io or use PlantUML.]
 
 #### 6.5.3 Use Case Diagram
 
@@ -255,32 +249,30 @@ Use cases:
 - Register New Station (Administrator)
 - Auto-generate Reading, Trigger Alert (Sensor Daemon)
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Use Case Diagram -- system boundary rectangle with four actors outside and use case ellipses inside connected by association lines. Draw in draw.io and export as PNG.]
 
 ### 6.6 Module Dependency Graph
 
 ```
 app.py
-  Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ database.py        (get_connection, init_db, reverse_engineer_schema)
-  Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ sensor_sim.py      (start_background_sensor)
-  Ã¢"â€š     Ã¢""Ã¢"â‚¬Ã¢"â‚¬ database.py  (get_connection)
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ Flask / flask_cors / xml.etree / sqlite3
+  --""--"|--"| database.py        (get_connection, init_db, reverse_engineer_schema)
+  --""--"|--"| sensor_sim.py      (start_background_sensor)
+  --"L--     --""--"|--"| database.py  (get_connection)
+  --""--"|--"| Flask / flask_cors / xml.etree / sqlite3
 
 station_gui.py
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ urllib.request / json / tkinter
+  --""--"|--"| urllib.request / json / tkinter
 
 network_check.py
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ socket / psutil / subprocess
+  --""--"|--"| socket / psutil / subprocess
 
 start.sh
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ python server/app.py
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ python server/network_check.py
-  Ã¢""Ã¢"â‚¬Ã¢"â‚¬ python server/database.py (via -c inline)
+  --""--"|--"| python server/app.py
+  --""--"|--"| python server/network_check.py
+  --""--"|--"| python server/database.py (via -c inline)
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Module dependency graph -- boxes for each .py file with directed arrows showing import/call dependencies. Can be auto-generated from the graphify-out/graph.html file -- open in browser and screenshot.]
 
----
+--
 
 ## Section 7: Interface Design and Screen Overview
 
@@ -288,13 +280,13 @@ start.sh
 
 The primary user interface is accessed at `http://localhost:5000/`. It is a single-page dashboard built with a dark glassmorphism aesthetic -- a deep navy-to-black radial gradient background with translucent frosted-glass cards using `backdrop-filter: blur(10px)` and `rgba` backgrounds.
 
-**Header Bar:** Displays the application title ("Ã°Å¸Å'Â¦ Weather Station -- Live Monitor"), the active station name and location, the last-updated timestamp, and a pulsing green "Ã¢â€"Â LIVE" badge that dims to 30% opacity if the AJAX poll fails (indicating connectivity loss).
+**Header Bar:** Displays the application title ("--'-- Weather Station -- Live Monitor"), the active station name and location, the last-updated timestamp, and a pulsing green "-- LIVE" badge that dims to 30% opacity if the AJAX poll fails (indicating connectivity loss).
 
 **Metric Cards:** Four cards arranged in a responsive CSS Grid display:
-- Ã°Å¸Å'Â¡ Temperature (Ã‚Â°C) with a cyan progress bar
-- Ã°Å¸'Â§ Humidity (%) with a purple progress bar
-- Ã°Å¸"Âµ Pressure (hPa) with a green progress bar
-- Ã°Å¸'Â¨ Wind Speed (km/h) with a blue progress bar
+- --'-- Temperature (|--C) with a cyan progress bar
+- --'-- Humidity (%) with a purple progress bar
+- -- Pressure (hPa) with a green progress bar
+- --'-- Wind Speed (km/h) with a blue progress bar
 
 Each card shows the numeric value in a large bold font, with the progress bar proportionally filled to represent the reading relative to its operational range.
 
@@ -302,7 +294,7 @@ Each card shows the numeric value in a large bold font, with the progress bar pr
 
 **Wind Compass:** A CSS-animated compass dial with a triangular needle that rotates to the current wind direction. The cardinal direction label (N, NE, E, etc.) updates textually below the dial.
 
-**Alert Banner:** A dismissible red/orange banner appears at the top of the viewport when temperature exceeds 42Ã‚Â°C or drops below 5Ã‚Â°C. The banner message includes the exact value and station name.
+**Alert Banner:** A dismissible red/orange banner appears at the top of the viewport when temperature exceeds 42|--C or drops below 5|--C. The banner message includes the exact value and station name.
 
 **Alerts History Panel:** A scrollable list of the five most recent threshold alerts retrieved from `/api/alerts`, showing alert type, message text, and timestamp.
 
@@ -310,11 +302,11 @@ Each card shows the numeric value in a large bold font, with the progress bar pr
 
 **Data Source Toggle:** Two buttons labelled "JSON" and "XML" switch the AJAX data source between `/api/current` (JSON) and `/api/readings.xml?limit=1` (XML), highlighting the active format.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the full live dashboard at http://localhost:5000/ -- show metric cards, Chart.js graph, compass, alerts panel, and raw data panel. Run `python server/app.py` and open browser to localhost:5000, then take a full-page screenshot (use browser DevTools Ã¢â€ ' Capture screenshot or the Windows Snipping Tool).]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000 -> take a full-page screenshot (Chrome: F12 -> Ctrl+Shift+P -> "Capture full size screenshot" or use Windows Snipping Tool Win+Shift+S).
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Close-up of the Chart.js time-series graph showing multiple coloured lines with tooltip visible -- hover over a data point to show the tooltip then screenshot.]
+> **[SCREENSHOT NEEDED]** On the dashboard at http://localhost:5000, hover your mouse over a point on the Chart.js graph to show the tooltip, then screenshot using Snipping Tool.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Dashboard with Alert Banner visible -- wait for temperature to exceed 42Ã‚Â°C (the sensor simulation will eventually trigger this) or temporarily lower the threshold in sensor_sim.py and screenshot the red alert banner at the top.]
+> **[SCREENSHOT NEEDED]** Dashboard showing the red alert banner. Temporarily set THRESHOLDS temperature max to 30.0 in sensor_sim.py, restart server, wait ~10s, then screenshot and revert the change.
 
 ### 7.2 Station Registration Form (register.html)
 
@@ -327,25 +319,25 @@ Accessed at `http://localhost:5000/register`, this form implements Experiment 7 
 
 The form uses HTML5 `required` and `pattern` attributes for client-side validation, and the Flask route performs an identical validation pass server-side. On success, a green flash message confirms registration. On failure, red inline error messages appear below each invalid field, and the form retains the user's input (sticky form).
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the Register Station page at http://localhost:5000/register -- show the form with glassmorphism styling. Open browser and navigate to localhost:5000/register then screenshot.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/register in browser -> screenshot the empty registration form.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the Register Station form with validation errors visible -- submit the form with an empty Station Name and invalid Latitude (e.g., "999") to trigger server-side error messages, then screenshot.]
+> **[SCREENSHOT NEEDED]** On http://localhost:5000/register, leave Station Name blank and enter "999" for Latitude, click Register -> screenshot the red inline error messages.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the Register Station form after successful submission -- shows the green flash message "Station X registered successfully!" at the top.]
+> **[SCREENSHOT NEEDED]** On http://localhost:5000/register, fill in valid data (e.g. Name="Beta Station", Location="Lab", Lat=13.0, Lon=77.0) and submit -> screenshot the green success flash message at top.
 
 ### 7.3 Tkinter Desktop GUI (station_gui.py)
 
-The desktop application presents a dark-themed window (520Ãƒâ€"600 px, fixed size) with:
+The desktop application presents a dark-themed window (520x600 px, fixed size) with:
 
-- **Header** -- "Ã°Å¸Å'Â¦ Weather Station" title in cyan, subtitle "Manual Sensor Input Console | Exp 10 -- Python GUI"
+- **Header** -- "Weather Station" title in cyan, subtitle "Manual Sensor Input Console | Exp 10 -- Python GUI"
 - **Station Dropdown** -- a read-only `ttk.Combobox` populated from `/api/stations` on startup
-- **Five Input Fields** -- Temperature (Ã‚Â°C), Humidity (%), Pressure (hPa), Wind Speed (km/h), Wind Direction (8-point compass Combobox)
+- **Five Input Fields** -- Temperature (deg C), Humidity (%), Pressure (hPa), Wind Speed (km/h), Wind Direction (8-point compass Combobox)
 - **Submit Button** -- styled dark navy button that validates inputs locally, then POSTs to `/api/submit`
 - **Status Bar** -- bottom bar showing connection status or submission result
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the Tkinter GUI window (station_gui.py) -- run `python gui/station_gui.py` while the Flask server is running, then screenshot the open window showing all form fields, the station dropdown, and the status bar at the bottom.]
+> **[SCREENSHOT NEEDED]** With Flask server running, open a second terminal and run: python gui/station_gui.py -> screenshot the dark GUI window showing all input fields and the station dropdown.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Screenshot of the Tkinter GUI showing a validation error messagebox -- enter an invalid temperature (e.g., "999") and click Submit to trigger the local validation error dialog.]
+> **[SCREENSHOT NEEDED]** In the Tkinter GUI, enter "999" in the Temperature field and click Submit -> screenshot the red error messagebox that appears.
 
 ## Section 8: Code Snippets
 
@@ -432,7 +424,7 @@ def reverse_engineer_schema():
 
 **Explanation:** `init_db()` implements forward engineering -- the Python code IS the migration script, translating ER entities directly into `CREATE TABLE` DDL statements. `reverse_engineer_schema()` implements reverse engineering by querying SQLite's internal `sqlite_master` catalogue and `PRAGMA table_info`, producing a dictionary that mirrors the live database structure. This schema is exposed via the `/api/schema` endpoint for programmatic introspection.
 
----
+--
 
 ### 8.2 sensor_sim.py -- Simulated Sensor with Alert Generation
 
@@ -505,7 +497,7 @@ def sensor_loop(interval=5):
                         "INSERT INTO alerts (station_id,reading_id,alert_type,message)"
                         " VALUES (?,?,?,?)",
                         (station_id, reading_id, 'HIGH_TEMP',
-                         f"Temperature {reading['temperature']}Ã‚Â°C exceeds max!"))
+                         f"Temperature {reading['temperature']}|--C exceeds max!"))
                     conn.commit()
             conn.close()
         except Exception as e:
@@ -520,7 +512,7 @@ def start_background_sensor(interval=5):
 
 **Explanation:** The smooth random-walk algorithm (`_next_value`) prevents unnatural step-changes in readings. The sinusoidal `sine_offset` applied to temperature simulates the real-world day/night thermal cycle. The daemon thread (`daemon=True`) ensures the thread is automatically killed when the main Flask process exits, preventing zombie processes. Alert generation is tightly coupled to the reading insertion loop -- immediately after committing a reading, threshold checks are performed and alerts are inserted in the same database connection.
 
----
+--
 
 ### 8.3 app.py -- Flask API Endpoints (Experiments 7, 8, 9)
 
@@ -630,7 +622,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
 ```
 
----
+--
 
 ### 8.4 app.js -- AJAX Poll Loop with JSON/XML Toggle (Experiments 6 & 9)
 
@@ -659,7 +651,7 @@ function updateCards(d) {
   el('compass-dir').textContent = dir;
   if (d.temperature > 42) {
     el('alert-text').textContent =
-        `Ã¢Å¡  High Temperature: ${parseFloat(d.temperature).toFixed(1)}Ã‚Â°C`;
+        `--  High Temperature: ${parseFloat(d.temperature).toFixed(1)}|--C`;
     el('alert-banner').classList.remove('hidden');
   }
 }
@@ -700,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
----
+--
 
 ### 8.5 network_check.py -- Network Interface Inspector (Experiment 5)
 
@@ -729,19 +721,19 @@ def check_server_reachability(host=SERVER_HOST, port=SERVER_PORT, timeout=3):
     try:
         sock = socket.create_connection((host, port), timeout=timeout)
         sock.close()
-        print(f"  Status : Ã¢Å"" REACHABLE -- Server is running!")
+        print(f"  Status : --"" REACHABLE -- Server is running!")
         return True
     except ConnectionRefusedError:
-        print(f"  Status : Ã¢Å"â€" REFUSED -- Server not running on port {port}")
+        print(f"  Status : --"" REFUSED -- Server not running on port {port}")
     return False
 
 def check_internet(host='8.8.8.8', port=53, timeout=3):
     try:
         socket.create_connection((host, port), timeout=timeout).close()
-        print("  Status : Ã¢Å"" Internet is REACHABLE")
+        print("  Status : --"" Internet is REACHABLE")
         return True
     except Exception:
-        print("  Status : Ã¢Å"â€" No internet connection")
+        print("  Status : --"" No internet connection")
     return False
 
 if __name__ == '__main__':
@@ -750,7 +742,7 @@ if __name__ == '__main__':
     check_server_reachability()
 ```
 
----
+--
 
 ### 8.6 scripts/start.sh -- Bash Automation (Experiment 4)
 
@@ -761,8 +753,8 @@ set -e
 CYAN="\033[1;36m"; GREEN="\033[1;32m"; RESET="\033[0m"
 PORT=5000; LOG_FILE="server.log"; VENV_DIR=".venv"
 
-log()  { echo -e "${GREEN}[Ã¢Å""]${RESET} $1"; }
-info() { echo -e "${CYAN}[Ã¢â€ ']${RESET} $1"; }
+log()  { echo -e "${GREEN}[--""]${RESET} $1"; }
+info() { echo -e "${CYAN}[--']${RESET} $1"; }
 
 check_python() {
   command -v python3 &>/dev/null && { PYTHON=python3; log "Python3 found"; } \
@@ -792,7 +784,7 @@ health_check() {
     $PYTHON -c "import urllib.request; urllib.request.urlopen(
         'http://localhost:$PORT/api/current',timeout=2); print('ok')" \
         2>/dev/null | grep -q ok && {
-      log "Server healthy Ã¢â€ ' http://localhost:$PORT"; return; }
+      log "Server healthy --' http://localhost:$PORT"; return; }
     echo -n "."
   done
 }
@@ -805,7 +797,7 @@ start_server; health_check
 tail -f "$LOG_FILE"
 ```
 
----
+--
 
 ### 8.7 Dockerfile & docker-compose.yml (Experiment 8)
 
@@ -848,7 +840,7 @@ services:
       start_period: 10s
 ```
 
----
+--
 
 ### 8.8 station_gui.py -- Tkinter GUI (Experiment 10)
 
@@ -934,7 +926,6 @@ if __name__ == '__main__':
 
 The system design began with producing a Level-0 and Level-1 Data Flow Diagram to map all data sources, sinks, processes, and stores. The ER diagram identified three entities -- Station, Reading, Alert -- with two one-to-many relationships. This diagram directly drove the schema in `database.py`, making the ER-to-DDL mapping explicit and traceable.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: The final ER Diagram -- draw in draw.io using crow's foot notation with Station, Reading, and Alert entities showing all attributes and cardinality labels. Export as PNG and insert here.]
 
 ### 9.2 Experiment 2 -- UML Diagrams
 
@@ -944,11 +935,8 @@ Three UML artefacts were produced:
 2. **Sequence Diagram** -- Traces the complete AJAX poll cycle from browser timer fire to DOM update, through Flask, database, and back.
 3. **Use Case Diagram** -- Maps actor-system interactions for all four actors: Browser User, Station Operator, Administrator, and Sensor Daemon.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Class Diagram drawn in draw.io or PlantUML showing all classes/modules with attributes and methods.]
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Sequence Diagram showing the AJAX poll cycle through app.js Ã¢â€ ' Flask Ã¢â€ ' SQLite Ã¢â€ ' DOM.]
 
-Ã°Å¸"Â¸ [INSERT IMAGE: UML Use Case Diagram with system boundary and four actors.]
 
 ### 9.3 Experiment 3 -- Forward and Reverse Engineering
 
@@ -956,7 +944,7 @@ Three UML artefacts were produced:
 
 **Reverse Engineering** is implemented in `database.py:reverse_engineer_schema()`. It queries `sqlite_master` to enumerate all tables, then calls `PRAGMA table_info(table_name)` for each, extracting column names, types, nullability, default values, and primary key flags. The result is returned as a nested Python dict serialised to JSON at the `/api/schema` endpoint.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser screenshot of http://localhost:5000/api/schema showing the JSON response with the stations, readings, and alerts table schemas. Run the server and navigate to this URL in browser, then screenshot.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/api/schema in browser -> screenshot the JSON response showing the stations, readings, and alerts table schemas. Install the "JSON Viewer" Chrome extension for better formatting.
 
 ### 9.4 Experiment 4 -- Shell Script
 
@@ -968,7 +956,7 @@ Key implementation choices:
 - The health-check loop uses an inline Python one-liner to HTTP-GET `/api/current` and prints `ok` on success, which `grep -q ok` detects.
 - Port conflict resolution uses `lsof -Pi :5000` to find and `kill -9` any existing process holding port 5000.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Terminal screenshot of `bash scripts/start.sh` running -- shows the coloured banner, each step's tick marks, the health check dots, and the final "Dashboard Ã¢â€ ' http://localhost:5000" URL. Run in WSL or Git Bash terminal and screenshot.]
+> **[SCREENSHOT NEEDED]** Open Git Bash or WSL terminal in the project folder and run: bash scripts/start.sh -> screenshot the terminal output showing the coloured banner and each step completing with a tick.
 
 ### 9.5 Experiment 5 -- Network Interface Check
 
@@ -978,7 +966,7 @@ Key implementation choices:
 2. **Internet Connectivity:** Attempts a TCP connection to Google's public DNS at `8.8.8.8:53` with a 3-second timeout.
 3. **Server Reachability:** Attempts a TCP connection to `127.0.0.1:5000`. This directly tests whether the Flask server is accepting connections.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Terminal screenshot of `python server/network_check.py` output -- shows hostname, primary IP, interface list with UP/DOWN status, internet check result, and server reachability result. Run in PowerShell or terminal while Flask server is running.]
+> **[SCREENSHOT NEEDED]** In PowerShell, run: python server/network_check.py (while Flask is running) -> screenshot the output showing hostname, IP, interface list, internet check (green tick), and server reachable (green tick).
 
 ### 9.6 Experiment 6 -- JavaScript Dynamic Pages
 
@@ -986,7 +974,7 @@ The dashboard's `app.js` file drives all DOM manipulation. On `DOMContentLoaded`
 
 The `updateCards(data)` function updates eight DOM elements per poll cycle: four value spans and four progress bar widths. The compass needle is rotated using `element.style.transform = \`rotate(${deg}deg)\`` where degrees are looked up from a constant map (`WIND_DEGREES`). The live badge opacity is set to `1` on success and `0.3` on fetch failure -- a subtle but clear indicator of connectivity status.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser DevTools Network tab screenshot showing the repeated XHR/Fetch requests to /api/current every 3 seconds -- open DevTools (F12) Ã¢â€ ' Network tab Ã¢â€ ' filter by "current" Ã¢â€ ' wait 10 seconds to see multiple requests appear.]
+> **[SCREENSHOT NEEDED]** On http://localhost:5000, press F12 to open DevTools -> click the Network tab -> filter by "/current" -> wait 10 seconds -> screenshot showing multiple repeated fetch requests every 3 seconds.
 
 ### 9.7 Experiment 7 -- Flask Forms and Validation
 
@@ -997,7 +985,7 @@ The `/register` route handles both `GET` (render empty form) and `POST` (validat
 
 On successful INSERT, Flask's `flash()` system stores a one-time success message in the session, displayed on the next page render via Jinja2.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Register page with a successful flash message -- after submitting a valid station name, the green success banner appears at the top of the form. Screenshot from localhost:5000/register.]
+> **[SCREENSHOT NEEDED]** Same as the successful registration screenshot above - the green flash message at the top of the register page.
 
 ### 9.8 Experiment 8 -- Docker Deployment
 
@@ -1005,9 +993,9 @@ The `Dockerfile` uses a two-phase copy strategy to maximise layer cache efficien
 
 `docker-compose.yml` adds operational concerns: the `volumes` stanza mounts `./data` on the host to `/app/data` in the container, ensuring `weather.db` persists across `docker-compose down` / `up` cycles. The `healthcheck` polls `/api/current` every 30 seconds; after 3 failures, Docker marks the container as unhealthy and the `restart: unless-stopped` policy triggers a restart.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Terminal screenshot of `docker-compose up --build` -- shows Docker pulling python:3.11-slim, running pip install, copying files, and starting the container. Run `docker-compose up --build` in PowerShell from the project root and screenshot the terminal output.]
+> **[SCREENSHOT NEEDED]** In PowerShell (with Docker Desktop running), run: docker-compose up --build -> screenshot the terminal output showing Docker pulling python:3.11-slim, pip install steps, and "Running on http://0.0.0.0:5000".
 
-Ã°Å¸"Â¸ [INSERT IMAGE: `docker ps` output showing the `weather_station_app` container as healthy with port 5000 mapped. Run `docker ps` in PowerShell after `docker-compose up`.]
+> **[SCREENSHOT NEEDED]** After docker-compose up, open a new PowerShell window and run: docker ps -> screenshot showing the weather_station_app container with STATUS "healthy" and port 0.0.0.0:5000->5000/tcp.
 
 ### 9.9 Experiment 9 -- AJAX with JSON and XML
 
@@ -1019,9 +1007,9 @@ Two parallel code paths handle data retrieval:
 
 The toggle between formats is achieved by setting `dataSource = 'json'` or `'xml'` when the user clicks the format buttons. The `poll()` function reads `dataSource` at each interval.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Dashboard with "XML" button active -- click the XML toggle button on the dashboard and screenshot showing the raw XML data in the Raw Data panel and the XML label active.]
+> **[SCREENSHOT NEEDED]** On http://localhost:5000, click the "XML" button in the data source toggle -> screenshot showing the raw XML data in the Raw Data panel below the chart, with the XML button highlighted/active.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser screenshot of http://localhost:5000/api/readings.xml showing pretty-printed XML with WeatherData root element and multiple Reading child elements.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/api/readings.xml in browser -> screenshot the pretty-printed XML showing WeatherData root element with multiple Reading child elements.
 
 ### 9.10 Experiment 10 -- Python GUI (Tkinter)
 
@@ -1029,7 +1017,7 @@ The toggle between formats is achieved by setting `dataSource = 'json'` or `'xml
 
 The `_submit()` method performs local validation using a nested `parse()` helper function that checks both type (float conversion) and range. If any field fails, a `messagebox.showerror` dialog lists all errors. On validation success, the JSON payload is encoded to bytes and POSTed via `urllib.request.Request` with `Content-Type: application/json`. The server's response is parsed and a success/failure dialog shown accordingly.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Tkinter GUI window after successful submission -- shows "Ã¢Å"" Reading submitted successfully!" in the cyan status bar at the bottom. Screenshot after clicking Submit with valid values while server is running.]
+> **[SCREENSHOT NEEDED]** In the Tkinter GUI, fill in valid values (e.g. Temp=29.5, Hum=60, Pressure=1013, Wind=12, Direction=N) and click Submit -> screenshot the "Reading submitted successfully!" info dialog and the green status bar.
 
 ### 9.11 Experiment 11 -- LaTeX Documentation
 
@@ -1043,7 +1031,7 @@ The `_submit()` method performs local validation using a nested `parse()` helper
 
 The document is compiled on Overleaf using pdfLaTeX. Figures are wrapped in the `figure` environment with `\caption{}` and `\label{}` for automatic numbering and `\ref{}` cross-referencing.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Overleaf editor screenshot showing the report.tex file open with the compiled PDF preview on the right -- paste docs/report.tex into a new Overleaf project, upload diagram images, and screenshot the editor + PDF preview side by side.]
+> **[SCREENSHOT NEEDED]** Go to https://overleaf.com, create a new project, paste the contents of docs/report.tex, upload any diagram images, and click Compile -> screenshot the Overleaf editor with the compiled PDF visible on the right side.
 
 ### 9.12 Experiment 12 -- Git Version Control
 
@@ -1067,11 +1055,11 @@ git commit -m "feat: add XML API endpoint and client-side toggle"
 git push origin main
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: `git log --oneline` output in terminal -- shows the commit history with descriptive commit messages. Run `git log --oneline -15` in PowerShell from the project root and screenshot.]
+> **[SCREENSHOT NEEDED]** In PowerShell in the project root, run: git log --oneline -12 -> screenshot the terminal showing the commit history with commit hashes and messages.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: `git status` output showing a clean working tree -- run `git status` in PowerShell and screenshot.]
+> **[SCREENSHOT NEEDED]** In PowerShell in the project root, run: git status -> screenshot showing "nothing to commit, working tree clean".
 
----
+--
 
 ## Section 10: Application Output
 
@@ -1088,7 +1076,7 @@ When `python server/app.py` is executed:
  * Running on http://192.168.x.x:5000
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: PowerShell terminal screenshot showing Flask server startup output -- run `python server/app.py` and screenshot the terminal immediately after startup.]
+> **[SCREENSHOT NEEDED]** In PowerShell, run: python server/app.py -> screenshot the terminal immediately after startup showing the "[DB Database initialized", "[Sensor] Starting auto-simulation", and "Running on http://0.0.0.0:5000" lines.]
 
 ### 10.2 Live Dashboard Output
 
@@ -1098,7 +1086,7 @@ The browser dashboard at `http://localhost:5000` shows:
 - Station name "Station Alpha" and location "Main Campus"
 - LIVE badge pulsing green
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Full-page screenshot of the live dashboard at localhost:5000 showing all four metric cards with real values, the Chart.js time-series graph with 10+ data points, and the wind compass. Use browser's full-page screenshot tool or Windows Snipping Tool.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000 in browser -> take full-page screenshot (Chrome: F12 -> Ctrl+Shift+P -> type "screenshot" -> select "Capture full size screenshot").
 
 ### 10.3 JSON API Response
 
@@ -1120,7 +1108,7 @@ The browser dashboard at `http://localhost:5000` shows:
 }
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser screenshot of http://localhost:5000/api/current showing the raw JSON response. Navigate to this URL and screenshot (use JSONView browser extension for prettier formatting).]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/api/current in browser -> screenshot the JSON response. Install "JSON Viewer" Chrome extension for coloured formatting.
 
 ### 10.4 XML API Response
 
@@ -1148,16 +1136,16 @@ The browser dashboard at `http://localhost:5000` shows:
 </WeatherData>
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser screenshot of http://localhost:5000/api/readings.xml?limit=2 showing pretty-printed XML output. Navigate in browser and screenshot.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/api/readings.xml in browser -> screenshot the pretty-printed XML showing WeatherData root element with multiple Reading child elements.
 
 ### 10.5 Tkinter GUI Submission Output
 
 After filling values and clicking "Submit Reading":
-- Status bar: `Ã¢Å"" Reading submitted successfully!`
+- Status bar: `--"" Reading submitted successfully!`
 - Info dialog: "Reading submitted to server!"
 - Dashboard immediately reflects the new reading on next poll.
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Tkinter GUI window after a successful manual submission -- status bar shows green tick message and the success dialog is visible. Screenshot from station_gui.py running alongside the server.]
+> **[SCREENSHOT NEEDED]** See Tkinter GUI submission screenshot above.
 
 ### 10.6 Network Check Output
 
@@ -1177,32 +1165,32 @@ After filling values and clicking "Submit Reading":
  Internet Connectivity Check
 ----------------------------------------
   Target : Google DNS (8.8.8.8:53)
-  Status : Ã¢Å"" Internet is REACHABLE
+  Status : --"" Internet is REACHABLE
 
  Server Reachability Check
 ----------------------------------------
   Target : 127.0.0.1:5000
-  Status : Ã¢Å"" REACHABLE -- Server is running!
+  Status : --"" REACHABLE -- Server is running!
 =======================================================
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Terminal screenshot of `python server/network_check.py` showing the full formatted output with all checks passing. Run in PowerShell with server active.]
+> **[SCREENSHOT NEEDED]** In PowerShell, run: python server/network_check.py (while Flask is running) -> screenshot the output showing hostname, IP, interface list, internet check (green tick), and server reachable (green tick).
 
 ### 10.7 Alerts Panel Output
 
-When temperature exceeds 42Ã‚Â°C, the alert system triggers:
+When temperature exceeds 42|--C, the alert system triggers:
 - Alert banner visible at top of dashboard
-- Alerts panel shows: `HIGH_TEMP -- Temperature 42.31Ã‚Â°C exceeds max threshold!`
+- Alerts panel shows: `HIGH_TEMP -- Temperature 42.31|--C exceeds max threshold!`
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Dashboard screenshot showing the red alert banner at the top and the alerts history panel populated with HIGH_TEMP entries. Can trigger by temporarily lowering THRESHOLDS['temperature']['max'] to 30.0 in sensor_sim.py.]
+> **[SCREENSHOT NEEDED]** See alert banner screenshot above.
 
 ### 10.8 Schema Endpoint Output
 
 `GET http://localhost:5000/api/schema` returns a JSON representation of all tables:
 
-Ã°Å¸"Â¸ [INSERT IMAGE: Browser screenshot of http://localhost:5000/api/schema showing the JSON schema response with all three tables (stations, readings, alerts) and their column definitions.]
+> **[SCREENSHOT NEEDED]** Open http://localhost:5000/api/schema in browser -> screenshot the JSON response showing the stations, readings, and alerts table schemas. Install the "JSON Viewer" Chrome extension for better formatting.
 
----
+--
 
 ## Section 11: Conclusion and Future Enhancements
 
@@ -1222,8 +1210,8 @@ The system generates realistic, continuously evolving weather data and surfaces 
 ### 11.2 Future Enhancements
 
 | Enhancement | Description |
-|-------------|-------------|
-| **Real Sensor Integration** | Replace `sensor_sim.py` with an adapter for real hardware sensors (e.g., Raspberry Pi with DHT22 or BMP280) via serial/IÃ‚Â²C. |
+|--|--|
+| **Real Sensor Integration** | Replace `sensor_sim.py` with an adapter for real hardware sensors (e.g., Raspberry Pi with DHT22 or BMP280) via serial/I|--C. |
 | **Multiple Station Support** | Extend the dashboard to show a station selector and render per-station charts, leveraging the existing multi-station schema. |
 | **WebSocket Push** | Replace 3-second AJAX polling with Flask-SocketIO WebSocket push for true real-time updates with sub-second latency and reduced HTTP overhead. |
 | **User Authentication** | Add JWT-based authentication for the `/api/submit` and `/register` endpoints to prevent unauthorised data injection. |
@@ -1234,7 +1222,7 @@ The system generates realistic, continuously evolving weather data and surfaces 
 | **Alerting Notifications** | Integrate SMTP email or Twilio SMS alerts when threshold violations are detected, triggered from `_check_and_insert_alerts()`. |
 | **Unit Test Suite** | Add `pytest` tests for all API endpoints using Flask's test client, and unit tests for `sensor_sim` and `database` modules. |
 
----
+--
 
 ## Section 12: References
 
@@ -1274,7 +1262,7 @@ The system generates realistic, continuously evolving weather data and surfaces 
 
 18. psutil Contributors. (2024). *psutil Documentation*. Retrieved from https://psutil.readthedocs.io/
 
----
+--
 
 ## Section 13: Annexure
 
@@ -1282,34 +1270,34 @@ The system generates realistic, continuously evolving weather data and surfaces 
 
 ```
 weather-station/
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ server/
-Ã¢"â€š   Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ app.py              # Flask API -- Exp 7, 8, 9
-Ã¢"â€š   Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ database.py         # SQLite -- Exp 3 (Forward/Reverse Engineering)
-Ã¢"â€š   Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ sensor_sim.py       # Auto weather sensor background thread
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ network_check.py    # Exp 5 -- network interface check
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ gui/
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ station_gui.py      # Exp 10 -- Tkinter desktop GUI
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ templates/
-Ã¢"â€š   Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ index.html          # Live dashboard -- Exp 6 & 9
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ register.html       # Station registration form -- Exp 7
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ static/
-Ã¢"â€š   Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ style.css           # Dark glassmorphism CSS theme
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ app.js              # AJAX + Chart.js + JSON/XML toggle
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ scripts/
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ start.sh            # Exp 4 -- Bash automation script
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ docs/
-Ã¢"â€š   Ã¢""Ã¢"â‚¬Ã¢"â‚¬ report.tex          # Exp 11 -- LaTeX project report
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ Dockerfile              # Exp 8 -- Docker image definition
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ docker-compose.yml      # Exp 8 -- Docker Compose orchestration
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ requirements.txt        # Python dependencies
-Ã¢"Å"Ã¢"â‚¬Ã¢"â‚¬ .gitignore              # Exp 12 -- Git ignore rules
-Ã¢""Ã¢"â‚¬Ã¢"â‚¬ README.md               # Project documentation
+--""--"|--"| server/
+--"L--   --""--"|--"| app.py              # Flask API -- Exp 7, 8, 9
+--"L--   --""--"|--"| database.py         # SQLite -- Exp 3 (Forward/Reverse Engineering)
+--"L--   --""--"|--"| sensor_sim.py       # Auto weather sensor background thread
+--"L--   --""--"|--"| network_check.py    # Exp 5 -- network interface check
+--""--"|--"| gui/
+--"L--   --""--"|--"| station_gui.py      # Exp 10 -- Tkinter desktop GUI
+--""--"|--"| templates/
+--"L--   --""--"|--"| index.html          # Live dashboard -- Exp 6 & 9
+--"L--   --""--"|--"| register.html       # Station registration form -- Exp 7
+--""--"|--"| static/
+--"L--   --""--"|--"| style.css           # Dark glassmorphism CSS theme
+--"L--   --""--"|--"| app.js              # AJAX + Chart.js + JSON/XML toggle
+--""--"|--"| scripts/
+--"L--   --""--"|--"| start.sh            # Exp 4 -- Bash automation script
+--""--"|--"| docs/
+--"L--   --""--"|--"| report.tex          # Exp 11 -- LaTeX project report
+--""--"|--"| Dockerfile              # Exp 8 -- Docker image definition
+--""--"|--"| docker-compose.yml      # Exp 8 -- Docker Compose orchestration
+--""--"|--"| requirements.txt        # Python dependencies
+--""--"|--"| .gitignore              # Exp 12 -- Git ignore rules
+--""--"|--"| README.md               # Project documentation
 ```
 
 ### Annexure B: API Endpoint Reference
 
 | Endpoint | Method | Experiment | Description | Sample Response |
-|----------|--------|-----------|-------------|-----------------|
+|--|--|--|--|--|
 | `/` | GET | 6, 9 | Live dashboard HTML | HTML page |
 | `/api/current` | GET | 9 | Latest single reading | JSON object |
 | `/api/readings` | GET | 9 | Last N readings (JSON) | `{"count":20,"readings":[...]}` |
@@ -1323,19 +1311,19 @@ weather-station/
 ### Annexure C: Sensor Simulation Parameters
 
 | Parameter | Initial Value | Delta Range | Min | Max | Notes |
-|-----------|--------------|-------------|-----|-----|-------|
-| Temperature (Ã‚Â°C) | 28.0 | Ã‚Â±0.8 | -10.0 | 50.0 | + sinusoidal day/night offset |
-| Humidity (%) | 60.0 | Ã‚Â±1.5 | 0.0 | 100.0 | -- |
-| Pressure (hPa) | 1013.25 | Ã‚Â±0.5 | 950.0 | 1050.0 | -- |
-| Wind Speed (km/h) | 12.0 | Ã‚Â±2.0 | 0.0 | 120.0 | -- |
-| Wind Direction | N (idx 0) | Ã‚Â±1 step | -- | -- | 8-point compass cyclic |
+|--|--|--|--|--|--|
+| Temperature (|--C) | 28.0 | |--0.8 | -10.0 | 50.0 | + sinusoidal day/night offset |
+| Humidity (%) | 60.0 | |--1.5 | 0.0 | 100.0 | -- |
+| Pressure (hPa) | 1013.25 | |--0.5 | 950.0 | 1050.0 | -- |
+| Wind Speed (km/h) | 12.0 | |--2.0 | 0.0 | 120.0 | -- |
+| Wind Direction | N (idx 0) | |--1 step | -- | -- | 8-point compass cyclic |
 
 ### Annexure D: Alert Threshold Table
 
 | Alert Type | Field | Condition | Message Template |
-|-----------|-------|-----------|-----------------|
-| HIGH_TEMP | temperature | > 42.0Ã‚Â°C | "Temperature XÃ‚Â°C exceeds max threshold!" |
-| LOW_TEMP | temperature | < 5.0Ã‚Â°C | "Temperature XÃ‚Â°C below min threshold!" |
+|--|--|--|--|
+| HIGH_TEMP | temperature | > 42.0|--C | "Temperature X|--C exceeds max threshold!" |
+| LOW_TEMP | temperature | < 5.0|--C | "Temperature X|--C below min threshold!" |
 | HIGH_WIND | wind_speed | > 80.0 km/h | "Wind speed X km/h -- High wind warning!" |
 
 ### Annexure E: Git Commit Log Sample
@@ -1351,7 +1339,7 @@ g4e5f6a  feat: Flask API with JSON and SQLite (Exp 9)
 h7i8j9k  init: project structure, database schema (Exp 1, 3)
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: `git log --oneline` screenshot from PowerShell showing actual commit history of the project. Run `git log --oneline` in the project directory.]
+> **[SCREENSHOT NEEDED]** In PowerShell in the project root, run: git log --oneline -12 -> screenshot the terminal showing the commit history with commit hashes and messages.
 
 ### Annexure F: Docker Container Health Check Log
 
@@ -1371,7 +1359,7 @@ $ docker inspect weather_station_app | grep -A5 Health
 }
 ```
 
-Ã°Å¸"Â¸ [INSERT IMAGE: `docker inspect weather_station_app` terminal output or `docker ps` showing STATUS as "healthy (1 second ago)". Run after `docker-compose up --build` and screenshot.]
+> **[SCREENSHOT NEEDED]** In PowerShell (with Docker Desktop running), run: docker-compose up --build -> screenshot the terminal output showing Docker pulling python:3.11-slim, pip install steps, and "Running on http://0.0.0.0:5000".
 
 ### Annexure G: requirements.txt
 
@@ -1408,11 +1396,11 @@ server.pid
 Thumbs.db
 ```
 
----
+--
 
 *End of Report*
 
 **Project:** Real-Time Weather Station Dashboard
 **Mini Project #13** -- Software Tools Laboratory
 **Experiments Covered:** 1 through 12
-**Tech Stack:** Python 3.11 Ã‚Â· Flask 3.0 Ã‚Â· SQLite Ã‚Â· HTML5 Ã‚Â· Vanilla CSS Ã‚Â· JavaScript ES2022 Ã‚Â· Chart.js Ã‚Â· Tkinter Ã‚Â· JSON Ã‚Â· XML Ã‚Â· Docker Ã‚Â· Docker Compose Ã‚Â· Bash Ã‚Â· LaTeX Ã‚Â· Git
+**Tech Stack:** Python 3.11 |-- Flask 3.0 |-- SQLite |-- HTML5 |-- Vanilla CSS |-- JavaScript ES2022 |-- Chart.js |-- Tkinter |-- JSON |-- XML |-- Docker |-- Docker Compose |-- Bash |-- LaTeX |-- Git
