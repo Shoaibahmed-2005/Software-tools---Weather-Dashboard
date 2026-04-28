@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Database (generated at runtime)
+*.db
+*.sqlite3
+
+# Logs & PIDs
+*.log
+server.pid
+nohup.out
+
+# Docker
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Distribution
+dist/
+build/

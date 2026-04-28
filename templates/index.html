@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Station Dashboard — Live Monitor</title>
+  <meta name="description" content="Real-time weather station dashboard with live AJAX updates, JSON and XML data feeds, and dynamic charts." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════  HEADER  ═══════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🌦</span>
+      <div>
+        <h1 class="logo-title">WeatherStation</h1>
+        <p class="logo-sub">Real-Time Atmospheric Monitor — Mini Project #13</p>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="/" class="nav-link active" id="nav-dashboard">Dashboard</a>
+      <a href="/register" class="nav-link" id="nav-register">Register Station</a>
+      <a href="/api/readings" target="_blank" class="nav-link" id="nav-json">JSON API</a>
+      <a href="/api/readings.xml" target="_blank" class="nav-link" id="nav-xml">XML Feed</a>
+    </nav>
+    <div class="live-badge" id="live-badge">
+      <span class="pulse-dot"></span> LIVE
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════  MAIN  ═══════════════════════ -->
+<main class="main">
+
+  <!-- Alert Banner -->
+  <div class="alert-banner hidden" id="alert-banner">
+    <span class="alert-icon">⚠</span>
+    <span id="alert-text">Alert message here</span>
+    <button class="alert-close" onclick="dismissAlert()">✕</button>
+  </div>
+
+  <!-- Station Info Bar -->
+  <div class="station-bar">
+    <div class="station-info">
+      <span class="station-label">Station</span>
+      <span class="station-name" id="station-name">Loading…</span>
+    </div>
+    <div class="station-info">
+      <span class="station-label">Location</span>
+      <span class="station-name" id="station-location">—</span>
+    </div>
+    <div class="station-info">
+      <span class="station-label">Last Updated</span>
+      <span class="station-name mono" id="last-updated">—</span>
+    </div>
+    <div class="station-info">
+      <span class="station-label">Data Source</span>
+      <div class="source-toggle">
+        <button class="toggle-btn active" id="btn-json" onclick="setSource('json')">JSON</button>
+        <button class="toggle-btn" id="btn-xml" onclick="setSource('xml')">XML</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Metric Cards ─── -->
+  <section class="cards-grid" aria-label="Current weather readings">
+    <div class="card card-temp" id="card-temp">
+      <div class="card-icon">🌡</div>
+      <div class="card-label">Temperature</div>
+      <div class="card-value" id="val-temp">—</div>
+      <div class="card-unit">°C</div>
+      <div class="card-bar-track"><div class="card-bar" id="bar-temp"></div></div>
+      <div class="card-range">-10 … 50 °C</div>
+    </div>
+
+    <div class="card card-hum" id="card-hum">
+      <div class="card-icon">💧</div>
+      <div class="card-label">Humidity</div>
+      <div class="card-value" id="val-hum">—</div>
+      <div class="card-unit">%</div>
+      <div class="card-bar-track"><div class="card-bar" id="bar-hum"></div></div>
+      <div class="card-range">0 … 100 %</div>
+    </div>
+
+    <div class="card card-pres" id="card-pres">
+      <div class="card-icon">🔵</div>
+      <div class="card-label">Pressure</div>
+      <div class="card-value" id="val-pres">—</div>
+      <div class="card-unit">hPa</div>
+      <div class="card-bar-track"><div class="card-bar" id="bar-pres"></div></div>
+      <div class="card-range">950 … 1050 hPa</div>
+    </div>
+
+    <div class="card card-wind" id="card-wind">
+      <div class="card-icon">💨</div>
+      <div class="card-label">Wind Speed</div>
+      <div class="card-value" id="val-wind">—</div>
+      <div class="card-unit">km/h</div>
+      <div class="card-bar-track"><div class="card-bar" id="bar-wind"></div></div>
+      <div class="card-range">0 … 120 km/h</div>
+    </div>
+  </section>
+
+  <!-- ─── Wind Direction Compass + Charts ─── -->
+  <section class="charts-section">
+    <div class="compass-card">
+      <h2 class="section-title">Wind Direction</h2>
+      <div class="compass" id="compass">
+        <div class="compass-ring">
+          <span class="cp-label cp-n">N</span>
+          <span class="cp-label cp-e">E</span>
+          <span class="cp-label cp-s">S</span>
+          <span class="cp-label cp-w">W</span>
+          <div class="compass-needle" id="compass-needle"></div>
+        </div>
+        <div class="compass-dir" id="compass-dir">—</div>
+      </div>
+    </div>
+
+    <div class="chart-card main-chart-card">
+      <div class="chart-header">
+        <h2 class="section-title">Live Sensor History</h2>
+        <div class="chart-legend">
+          <span class="legend-dot" style="background:#00d4ff"></span> Temp
+          <span class="legend-dot" style="background:#a78bfa; margin-left:10px"></span> Humidity
+          <span class="legend-dot" style="background:#34d399; margin-left:10px"></span> Pressure (scaled)
+        </div>
+      </div>
+      <canvas id="main-chart" height="100"></canvas>
+    </div>
+  </section>
+
+  <!-- ─── Alerts + Raw Data ─── -->
+  <section class="bottom-section">
+    <div class="alerts-card">
+      <h2 class="section-title">⚠ Recent Alerts</h2>
+      <ul class="alerts-list" id="alerts-list">
+        <li class="alert-item no-alerts">No alerts — conditions normal ✓</li>
+      </ul>
+    </div>
+
+    <div class="raw-card">
+      <div class="raw-header">
+        <h2 class="section-title">📡 Raw API Response</h2>
+        <span class="raw-format" id="raw-format-label">JSON</span>
+      </div>
+      <pre class="raw-data" id="raw-data">Waiting for data…</pre>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Mini Project #13 — Real-Time Weather Station Dashboard &nbsp;|&nbsp;
+     Covers Experiments 1–12 &nbsp;|&nbsp;
+     Built with Flask · JavaScript · SQLite · Docker
+  </p>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register Station — WeatherStation</title>
+  <meta name="description" content="Register a new weather monitoring station with location coordinates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🌦</span>
+      <div>
+        <h1 class="logo-title">WeatherStation</h1>
+        <p class="logo-sub">Real-Time Atmospheric Monitor</p>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="/"         class="nav-link"        id="nav-dashboard">Dashboard</a>
+      <a href="/register" class="nav-link active"  id="nav-register">Register Station</a>
+      <a href="/api/readings"     target="_blank" class="nav-link" id="nav-json">JSON API</a>
+      <a href="/api/readings.xml" target="_blank" class="nav-link" id="nav-xml">XML Feed</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main" style="max-width:640px; margin:0 auto; padding-top:40px;">
+  <h2 class="page-heading">Register a New Weather Station</h2>
+  <p class="page-sub">Experiment 7 — Flask Web Forms &amp; Server-Side Validation</p>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form class="register-form" method="POST" action="/register" novalidate id="station-form">
+    <!-- Station Name -->
+    <div class="form-group {% if errors.name %}has-error{% endif %}">
+      <label class="form-label" for="name">Station Name *</label>
+      <input
+        class="form-input {% if errors.name %}input-error{% endif %}"
+        type="text" id="name" name="name"
+        value="{{ form_data.get('name', '') }}"
+        placeholder="e.g. Station Bravo"
+        autocomplete="off"
+      />
+      {% if errors.name %}
+        <span class="form-error">{{ errors.name }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Location -->
+    <div class="form-group {% if errors.location %}has-error{% endif %}">
+      <label class="form-label" for="location">Location *</label>
+      <input
+        class="form-input {% if errors.location %}input-error{% endif %}"
+        type="text" id="location" name="location"
+        value="{{ form_data.get('location', '') }}"
+        placeholder="e.g. North Campus, Building 4"
+      />
+      {% if errors.location %}
+        <span class="form-error">{{ errors.location }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Lat / Lon row -->
+    <div class="form-row">
+      <div class="form-group {% if errors.latitude %}has-error{% endif %}">
+        <label class="form-label" for="latitude">Latitude *</label>
+        <input
+          class="form-input {% if errors.latitude %}input-error{% endif %}"
+          type="number" step="any" id="latitude" name="latitude"
+          value="{{ form_data.get('latitude', '') }}"
+          placeholder="12.9716"
+        />
+        {% if errors.latitude %}
+          <span class="form-error">{{ errors.latitude }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group {% if errors.longitude %}has-error{% endif %}">
+        <label class="form-label" for="longitude">Longitude *</label>
+        <input
+          class="form-input {% if errors.longitude %}input-error{% endif %}"
+          type="number" step="any" id="longitude" name="longitude"
+          value="{{ form_data.get('longitude', '') }}"
+          placeholder="77.5946"
+        />
+        {% if errors.longitude %}
+          <span class="form-error">{{ errors.longitude }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <button class="submit-btn" type="submit" id="submit-btn">
+      📡 Register Station
+    </button>
+  </form>
+
+  <div class="form-note">
+    All fields marked * are required. Coordinates must be valid decimal degrees.
+  </div>
+</main>
+
+<footer class="footer">
+  <p>Mini Project #13 — Real-Time Weather Station Dashboard | Experiment 7 — Form Design &amp; Validation</p>
+</footer>
+
+<script>
+  // Client-side validation (Exp 6 & 7 — JavaScript enhancement)
+  document.getElementById('station-form').addEventListener('submit', function(e) {
+    const name = document.getElementById('name').value.trim();
+    const lat  = parseFloat(document.getElementById('latitude').value);
+    const lon  = parseFloat(document.getElementById('longitude').value);
+    let ok = true;
+
+    if (name.length < 3) {
+      alert('Station name must be at least 3 characters.');
+      ok = false;
+    }
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+      alert('Latitude must be a number between -90 and 90.');
+      ok = false;
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+      alert('Longitude must be a number between -180 and 180.');
+      ok = false;
+    }
+    if (!ok) e.preventDefault();
+  });
+</script>
+</body>
+</html>
