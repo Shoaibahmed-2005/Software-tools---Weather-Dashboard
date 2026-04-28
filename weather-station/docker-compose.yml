@@ -1,0 +1,25 @@
+# Experiment 8 — Docker Compose
+# Usage: docker-compose up --build
+
+version: '3.9'
+
+services:
+  weather-server:
+    build: .
+    container_name: weather_station_app
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist the SQLite database outside the container
+      - ./data:/app/data
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/current')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

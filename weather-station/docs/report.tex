@@ -1,0 +1,406 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx,hyperref,listings,xcolor,booktabs,tabularx,fancyhdr,titlesec,enumitem,amsmath}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=cyan}
+\definecolor{codebg}{RGB}{13,21,38}
+\definecolor{codetext}{RGB}{200,210,230}
+\definecolor{accent}{RGB}{0,180,220}
+
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{accent}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{green!60!white},
+  breaklines=true, frame=single, rulecolor=\color{gray!40},
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=8pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{gray}{\small Mini Project \#13 — Weather Station}}
+\lhead{\textcolor{gray}{\small Software Tools Lab}}
+\cfoot{\thepage}
+
+\title{
+  \vspace{-1cm}
+  {\Large \textbf{Mini Project \#13}}\\[0.4cm]
+  {\LARGE \textbf{Real-Time Weather Station Dashboard}}\\[0.3cm]
+  {\large A Full-Stack Web Application Covering Experiments 1--12}\\[0.5cm]
+  \hrule
+}
+\author{Software Tools Laboratory}
+\date{\today}
+
+\begin{document}
+\maketitle\thispagestyle{fancy}
+\tableofcontents\newpage
+
+%% ─────────────────────────────────────────────
+\section{Project Overview}
+This mini project implements a \textbf{Real-Time Weather Station Dashboard} — a full-stack application that synthesises concepts from all twelve laboratory experiments. A Python backend simulates atmospheric sensor readings and stores them in a SQLite database. A Flask API serves the data as both JSON and XML. A JavaScript-powered web dashboard polls the API every three seconds via AJAX and renders live charts and gauges. A Tkinter desktop GUI allows manual submission of readings. The entire stack is containerised with Docker.
+
+\subsection{Objectives}
+\begin{enumerate}[label=\arabic*.]
+  \item Model the system using Data Flow, Entity-Relationship, and UML diagrams.
+  \item Implement forward and reverse engineering via database schema generation and extraction.
+  \item Automate server startup using a Linux Bash shell script.
+  \item Check network interface availability with a Python script.
+  \item Build a dynamic JavaScript web dashboard with AJAX data polling.
+  \item Implement Flask web forms with client- and server-side validation.
+  \item Deploy the application using Docker and Docker Compose.
+  \item Develop an AJAX-enabled Rich Internet Application with JSON and XML data formats.
+  \item Create a Python Tkinter GUI for manual sensor data entry.
+  \item Document the project using \LaTeX.
+\end{enumerate}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 1: Data Flow Diagram and ER Diagram}
+
+\subsection{Data Flow Diagram (DFD)}
+\textbf{Level 0 — Context Diagram:}
+The system has three external entities: \textit{Sensor Simulator}, \textit{Web Browser}, and \textit{Tkinter GUI}. All data flows through the central process: \textit{Weather Station System}.
+
+\textbf{Level 1 DFD — Major Processes:}
+\begin{enumerate}
+  \item \textbf{P1 — Generate Reading:} Sensor Simulator $\rightarrow$ generates reading $\rightarrow$ SQLite DB
+  \item \textbf{P2 — Serve API:} SQLite DB $\rightarrow$ Flask reads $\rightarrow$ JSON/XML response $\rightarrow$ Browser
+  \item \textbf{P3 — Submit Manual:} Tkinter GUI $\rightarrow$ POST /api/submit $\rightarrow$ SQLite DB
+  \item \textbf{P4 — Generate Alert:} Reading crosses threshold $\rightarrow$ Alerts table $\rightarrow$ Dashboard
+  \item \textbf{P5 — Register Station:} Browser form $\rightarrow$ POST /register $\rightarrow$ Stations table
+\end{enumerate}
+
+\subsection{Entity-Relationship Diagram}
+Three entities with the following attributes and relationships:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Entity} & \textbf{Attributes} & \textbf{Key} \\
+\midrule
+Station & id, name, location, latitude, longitude, registered\_at & id (PK) \\
+Reading & id, station\_id, temperature, humidity, pressure, wind\_speed, wind\_direction, recorded\_at, source & id (PK) \\
+Alert   & id, station\_id, reading\_id, alert\_type, message, triggered\_at & id (PK) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Relationships:}
+\begin{itemize}
+  \item \textbf{Station} \textit{generates} \textbf{Reading} — One-to-Many (1:N)
+  \item \textbf{Reading} \textit{triggers} \textbf{Alert} — One-to-Zero-or-One (1:0..1)
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 2: UML Diagrams}
+
+\subsection{Use Case Diagram}
+\textbf{Actors:} Web User, GUI Operator, System (auto-sensor).
+
+\textbf{Use Cases:}
+\begin{itemize}
+  \item Web User: View Dashboard, Toggle JSON/XML, Register Station, View Alerts
+  \item GUI Operator: Launch GUI, Submit Manual Reading
+  \item System: Auto-Generate Reading, Check Thresholds, Insert Alert
+\end{itemize}
+
+\subsection{Class Diagram}
+\begin{lstlisting}[language=Python, caption=Class Structure]
+class SensorSimulator:
+    state: dict
+    + generate_reading() -> dict
+    + start_background_sensor(interval: int)
+
+class Database:
+    DB_PATH: str
+    + init_db()
+    + get_connection() -> Connection
+    + reverse_engineer_schema() -> dict
+
+class FlaskApp:
+    + index() -> HTML
+    + api_current() -> JSON
+    + api_readings() -> JSON
+    + api_readings_xml() -> XML
+    + api_submit() -> JSON
+    + register_station() -> HTML
+
+class StationGUI:
+    root: Tk
+    + _build_form()
+    + _submit()
+    + _fetch_stations()
+\end{lstlisting}
+
+\subsection{Sequence Diagram — AJAX Poll}
+\begin{enumerate}
+  \item Browser JS calls \texttt{fetch('/api/current')} every 3s
+  \item Flask queries SQLite: \texttt{SELECT * FROM readings ORDER BY id DESC LIMIT 1}
+  \item Flask returns JSON response
+  \item \texttt{app.js} calls \texttt{updateCards(data)} and \texttt{updateChart(data)}
+  \item Chart.js re-renders; DOM values update with animation
+\end{enumerate}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 3: Forward and Reverse Engineering}
+
+\subsection{Forward Engineering}
+The ER diagram is translated into SQLite DDL statements in \texttt{server/database.py}:
+
+\begin{lstlisting}[language=SQL, caption=Forward Engineering — DDL from ER]
+CREATE TABLE IF NOT EXISTS stations (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    name         TEXT NOT NULL UNIQUE,
+    location     TEXT NOT NULL,
+    latitude     REAL,
+    longitude    REAL,
+    registered_at TEXT DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS readings (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    station_id     INTEGER NOT NULL,
+    temperature    REAL NOT NULL,
+    humidity       REAL NOT NULL,
+    pressure       REAL NOT NULL,
+    wind_speed     REAL NOT NULL,
+    wind_direction TEXT DEFAULT 'N',
+    recorded_at    TEXT DEFAULT (datetime('now')),
+    source         TEXT DEFAULT 'auto',
+    FOREIGN KEY (station_id) REFERENCES stations(id)
+);
+\end{lstlisting}
+
+\subsection{Reverse Engineering}
+The \texttt{/api/schema} endpoint extracts table metadata using \texttt{PRAGMA table\_info()} and returns a JSON structure representing the inferred ER model — simulating reverse engineering of the database.
+
+%% ─────────────────────────────────────────────
+\section{Experiment 4: Linux Shell Programming}
+
+The file \texttt{scripts/start.sh} automates the full startup process:
+
+\begin{lstlisting}[language=bash, caption=Shell Script Highlights]
+#!/usr/bin/env bash
+# 1. Check Python installation
+command -v python3 || { echo "Python not found"; exit 1; }
+# 2. Create and activate virtual environment
+python3 -m venv .venv && source .venv/bin/activate
+# 3. Install dependencies
+pip install -q -r requirements.txt
+# 4. Run network check (Experiment 5)
+python3 server/network_check.py
+# 5. Initialise database
+python3 -c "from server.database import init_db; init_db()"
+# 6. Start Flask in background, tail logs
+nohup python3 server/app.py > server.log 2>&1 &
+tail -f server.log
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 5: Python Network Interface Checker}
+
+\texttt{server/network\_check.py} performs three checks:
+
+\begin{enumerate}
+  \item \textbf{Interface Listing} — uses \texttt{psutil.net\_if\_addrs()} to list all IPv4 interfaces with up/down status.
+  \item \textbf{Internet Check} — opens a socket to Google DNS (\texttt{8.8.8.8:53}).
+  \item \textbf{Server Reachability} — attempts \texttt{socket.create\_connection(('127.0.0.1', 5000))}.
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption=Socket-based server reachability check]
+import socket
+def check_server(host='127.0.0.1', port=5000, timeout=3):
+    try:
+        sock = socket.create_connection((host, port), timeout=timeout)
+        sock.close()
+        print(f"Server REACHABLE at {host}:{port}")
+        return True
+    except ConnectionRefusedError:
+        print("Server is NOT running")
+        return False
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 6: JavaScript Dynamic Web Pages}
+
+\texttt{static/app.js} implements a fully dynamic single-page dashboard:
+
+\begin{itemize}
+  \item \textbf{AJAX Polling:} \texttt{setInterval(poll, 3000)} — calls \texttt{fetch('/api/current')} every 3 seconds.
+  \item \textbf{DOM Manipulation:} Card values, progress bars, and the compass needle update on every poll.
+  \item \textbf{Chart.js:} A rolling 30-point line chart renders temperature, humidity, and pressure history.
+  \item \textbf{JSON/XML Toggle:} Users switch between data sources; the raw API response displays in a code panel.
+  \item \textbf{XML Parsing:} \texttt{DOMParser} parses the XML feed client-side and extracts values identically to JSON mode.
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 7: Web Programming — Form Design and Validation}
+
+The \texttt{/register} route demonstrates both client- and server-side validation:
+
+\textbf{Client-side (JavaScript):}
+\begin{lstlisting}[language=JavaScript, caption=Client-side validation]
+form.addEventListener('submit', function(e) {
+    if (name.length < 3) { alert('Name too short'); e.preventDefault(); }
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+        alert('Invalid latitude'); e.preventDefault();
+    }
+});
+\end{lstlisting}
+
+\textbf{Server-side (Flask/Python):}
+\begin{lstlisting}[language=Python, caption=Server-side validation in Flask]
+if not name:
+    errors['name'] = 'Station name is required.'
+elif len(name) < 3:
+    errors['name'] = 'Name must be at least 3 characters.'
+try:
+    lat = float(lat_str)
+    if not -90 <= lat <= 90:
+        errors['latitude'] = 'Latitude must be -90 to 90.'
+except ValueError:
+    errors['latitude'] = 'Enter a valid decimal number.'
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 8: Docker Deployment}
+
+\subsection{Dockerfile}
+\begin{lstlisting}[caption=Dockerfile]
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY server/ ./server/
+COPY templates/ ./templates/
+COPY static/ ./static/
+EXPOSE 5000
+CMD ["python", "server/app.py"]
+\end{lstlisting}
+
+\subsection{Docker Compose}
+\begin{lstlisting}[caption=docker-compose.yml]
+version: '3.9'
+services:
+  weather-server:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD","python","-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:5000/')"]
+      interval: 30s
+      retries: 3
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 9: AJAX-Enabled RIA with JSON and XML}
+
+The application provides dual data format support:
+
+\textbf{JSON endpoint:} \texttt{GET /api/readings} returns:
+\begin{lstlisting}[language=Python, caption=Sample JSON response]
+{
+  "count": 20,
+  "readings": [
+    {"id": 42, "temperature": 28.5, "humidity": 61.2,
+     "pressure": 1013.1, "wind_speed": 14.3,
+     "wind_direction": "NE", "recorded_at": "2024-01-15 10:23:05"}
+  ]
+}
+\end{lstlisting}
+
+\textbf{XML endpoint:} \texttt{GET /api/readings.xml} returns:
+\begin{lstlisting}[language=XML, caption=Sample XML response]
+<?xml version="1.0" ?>
+<WeatherData generated_at="2024-01-15T10:23:05Z">
+  <Reading>
+    <temperature>28.5</temperature>
+    <humidity>61.2</humidity>
+    <pressure>1013.1</pressure>
+    <wind_speed>14.3</wind_speed>
+    <wind_direction>NE</wind_direction>
+  </Reading>
+</WeatherData>
+\end{lstlisting}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 10: Python GUI — Tkinter}
+
+\texttt{gui/station\_gui.py} provides a desktop application with:
+\begin{itemize}
+  \item Input fields for Temperature, Humidity, Pressure, Wind Speed, Wind Direction
+  \item Station selector (populated via \texttt{GET /api/stations})
+  \item Client-side range validation before submission
+  \item \texttt{urllib.request} POST to \texttt{/api/submit}
+  \item Status bar showing success/failure with colour coding
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section{Experiment 11: Document Creation Using \LaTeX}
+This document itself is the \LaTeX\ deliverable for Experiment 11. It was authored in \texttt{docs/report.tex} and compiled via Overleaf. It covers the complete project documentation including diagrams, code listings, and analysis.
+
+%% ─────────────────────────────────────────────
+\section{Experiment 12: Software Management Tools}
+
+\subsection{Version Control (Git)}
+\begin{lstlisting}[language=bash, caption=Git workflow]
+git init
+git add .
+git commit -m "feat: initial weather station project"
+# Feature branch workflow
+git checkout -b feature/xml-endpoint
+git commit -m "feat: add XML API endpoint"
+git checkout main && git merge feature/xml-endpoint
+\end{lstlisting}
+
+\subsection{Bug Reporting (Bugzilla-style)}
+A sample bug report for this project:
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Field} & \textbf{Value} \\
+\midrule
+Bug ID     & WS-001 \\
+Summary    & Compass needle resets to North on XML mode switch \\
+Severity   & Minor \\
+Priority   & P3 \\
+Component  & Frontend / app.js \\
+Steps      & 1. Switch to XML mode. 2. Observe compass direction resets. \\
+Expected   & Compass should retain last known direction \\
+Actual     & Compass needle jumps to 0° (North) \\
+Fix        & Cache last wind\_direction; use cached value if XML parse returns null \\
+Status     & Resolved \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+%% ─────────────────────────────────────────────
+\section{Testing and Results}
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Test} & \textbf{Input} & \textbf{Expected} & \textbf{Result} \\
+\midrule
+Server Start & python server/app.py & HTTP 200 on port 5000 & \textcolor{green!60!black}{Pass} \\
+JSON API & GET /api/current & JSON with all fields & \textcolor{green!60!black}{Pass} \\
+XML API & GET /api/readings.xml & Valid XML document & \textcolor{green!60!black}{Pass} \\
+Form Validation & Empty station name & Error message shown & \textcolor{green!60!black}{Pass} \\
+GUI Submit & Valid reading via Tkinter & Reading appears on dashboard & \textcolor{green!60!black}{Pass} \\
+Docker Deploy & docker-compose up & Dashboard at localhost:5000 & \textcolor{green!60!black}{Pass} \\
+Network Check & python network\_check.py & Interface list printed & \textcolor{green!60!black}{Pass} \\
+Alert Trigger & temperature > 42°C & Alert banner shown & \textcolor{green!60!black}{Pass} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%% ─────────────────────────────────────────────
+\section{Conclusion}
+The Real-Time Weather Station Dashboard successfully integrates all twelve laboratory experiments into a cohesive, functional application. The project demonstrates a complete software development lifecycle: from design (DFD, ER, UML) through implementation (Python, Flask, JavaScript, Tkinter, Shell) to deployment (Docker) and documentation (\LaTeX). The live AJAX dashboard, dual JSON/XML data formats, and containerised deployment make it a practical example of modern full-stack development.
+
+\end{document}
